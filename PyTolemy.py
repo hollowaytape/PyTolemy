@@ -39,32 +39,26 @@ class Sexigesimal:
         return decimal
 
 
-def convert_10to60(n):		
-	degrees = n // 1
-	minutes = ((n - degrees) * 60.00) // 1
-	seconds = ((((n - degrees) * 60.00) - minutes) * 60.00) // 1
-	return Sexigesimal(degrees, minutes, seconds)
-	
 def prompt_10to60():
-	print "Enter your decimal value."
-	while True:
-		n = raw_input("> ")
-		if 'q' in n:
-			intro()
-		else:
-			n = float(n)
-		degrees = n // 1
-		minutes = ((n - degrees) * 60.00) // 1
-		seconds = ((((n - degrees) * 60.00) - minutes) * 60.00) // 1
-		print "\t", Sexigesimal(degrees, minutes, seconds)
-		print "Enter another decimal value or (q) to quit."
+    print "Enter your decimal value."
+    while True:
+        n = raw_input("> ")
+        if 'q' in n:
+            intro()
+        else:
+            n = float(n)
+        degrees = n // 1
+        minutes = ((n - degrees) * 60.00) // 1
+        seconds = ((((n - degrees) * 60.00) - minutes) * 60.00) // 1
+        print "\t", Sexigesimal(degrees, minutes, seconds)
+        print "Enter another decimal value or (q) to quit."
 
-def convert_60to10(n): 
-	decimal = 0.000000
-	decimal += n.degrees // 1
-	decimal += (n.minutes / 60.00)
-	decimal += (n.seconds / 60.00**2)
-	return decimal
+def convert_60to10(n):           # Currently only used in the arc/chord function.
+    decimal = 0.000000
+    decimal += n.degrees // 1
+    decimal += (n.minutes / 60.00)
+    decimal += (n.seconds / 60.00**2)
+    return decimal
 
 
 def prompt_60to10():
@@ -92,14 +86,13 @@ def prompt_chord_decimal():
         arc = raw_input("arc = ")
         if 'q' in arc:
             intro()
-		else:
-			arc = float(arc)
-		chord = sin(radians(arc / 2)) * 120
-		print "\t", chord
-		print "Enter another arc or (q) to quit."
-		
-		"""The chord is equal to half the sine of twice the arc.
-		"""
+        else:
+            arc = float(arc)
+        chord = sin(radians(arc / 2)) * 120
+        print "\t", chord
+        print "Enter another arc or (q) to quit."
+
+
 def prompt_chord_sexigesimal():
 	print "Enter the sexigesimal value of your arc to find the chord."
 	while True:
@@ -124,7 +117,7 @@ def intro():
  |  _/ || || || (_) | |__| _|| |\/| |\ V / \t
  |_|  \_, ||_| \___/|____|___|_|  |_| |_|  \t
       |__/                                 \t"""
-	print "Max Silbiger made this. ver 9/5"
+	print "Max Silbiger made this. ver 11/11"
 	print "\ta) Sexigecimal to Decimal"
 	print "\tb) Decimal to Sexigecimal"
 	print "\tc) Arc to Chord (Decimal)"
@@ -141,5 +134,5 @@ def intro():
 	else:
 		pass
 
-if __name__ == '__main__':
+if __name__ == '__main__':     # Helps separate interface/implementation.
     intro()
