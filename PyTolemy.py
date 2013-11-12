@@ -3,42 +3,41 @@
 # 9/2 Created interface. Intro, dec-sex and sex-dec conversion functions. Created chord function,
 # solved issue where IT WAS IN RADIANS THE WHOLE TIME. Added graphix. Added non-prompt versions of all functions.
 # Added a prompt for sexigesimal chord, but it does not output to sexigesimal.
-
+# 9/4 Changed chord table sexigesimal output to be sexigesimal.
 # Do I want this to be a standalone program or a library? Addition/subtraction/more tools might be easier in a library...
+
+# Still want to add: Conversion between sun's days and motion around the circle (365/360), easy addition/subtraction of the results, reverse chords.
+# I might want to clean up: The Sexigesimal class, so that all the conversions could be accomplished within the class.
+# I might consider: Writing a TI-84 BASIC program for these conversions, for portability.
+
 # -*- coding: utf-8 -*-
 
 from math import sin, radians
 
 class Sexigesimal:
-	"""Represents a sexigesimal number.
-	Attributes: degrees, minutes, seconds.
-	Maybe more if their implementation is necessary."""
-	def __init__(self, degrees, minutes, seconds):
-		self.degrees = degrees
-		self.minutes = minutes
-		self.seconds = seconds
-		
-	def __repr__(self):
-		return "%d * %d ' %d \"" % (self.degrees, self.minutes, self.seconds)
-		
-	def print_60(self):
-		"""Prints the sexigesimal number."""
-		print "%d * %d ' %d \"" % (self.degrees, self.minutes, self.seconds)
-		
-	def convert_to_10(self):
-		decimal = 0.000000
-		decimal += self.degrees // 1
-		decimal += (self.minutes / 60.00)
-		decimal += (self.seconds / 60.00**2)
-		return decimal
-	
-	def print_10(self):
-		"""Converts to and prints he decimal version of the number."""
-		decimal = 0.000000
-		decimal += self.degrees // 1
-		decimal += (self.minutes / 60.00)
-		decimal += (self.seconds / 60.00**2)
-		print decimal
+    """Represents a sexigesimal number.
+    Attributes: degrees, minutes, seconds.
+    Can instantiate with DMS or a decimal."""
+    def __init__(self, degrees, minutes=0, seconds=0):
+        if degrees % 1 == 0:
+            self.degrees = degrees
+            self.minutes = minutes
+            self.seconds = seconds
+        else:
+            self.degrees = degrees // 1
+            self.minutes = ((degrees - self.degrees) * 60.00) // 1
+            self.seconds = ((((degrees - self.degrees) * 60.00) - self.minutes) * 60.00) // 1
+
+    def __repr__(self):
+        return "%d * %d ' %d \"" % (self.degrees, self.minutes, self.seconds)
+
+    def convert_to_10(self):
+        decimal = 0.000000
+        decimal += self.degrees // 1
+        decimal += (self.minutes / 60.00)
+        decimal += (self.seconds / 60.00**2)
+        return decimal
+
 
 def convert_10to60(n):		
 	degrees = n // 1
@@ -66,30 +65,33 @@ def convert_60to10(n):
 	decimal += (n.minutes / 60.00)
 	decimal += (n.seconds / 60.00**2)
 	return decimal
-	
+
+
 def prompt_60to10():
-	print "Enter your hexidecimal value in degrees, minutes, and seconds."
-	while True:
-		degrees = raw_input("degrees = ")
-		if 'q' in degrees:
-			intro()
-		else:
-			degrees = int(degrees)
-		minutes = int(raw_input("minutes = "))
-		seconds = int(raw_input("seconds = "))
-		output = Sexigesimal(degrees, minutes, seconds)
-		output.print_10()
-		print "Enter another degree-value or (q) to quit."
-		
+    print "Enter your sexigesimal value in degrees, minutes, and seconds."
+    while True:
+        degrees = raw_input("degrees = ")
+        if 'q' in degrees:
+            intro()
+        else:
+            degrees = int(degrees)
+        minutes = int(raw_input("minutes = "))
+        seconds = int(raw_input("seconds = "))
+        output = Sexigesimal(degrees, minutes, seconds)
+        print output.convert_to_10()
+        print "Enter another degree-value or (q) to quit."
+
+
 def convert_chord(arc):
-	return sin(radians(arc / 2)) * 120
-		
+    return sin(radians(arc / 2)) * 120
+
+
 def prompt_chord_decimal():
-	print "Enter the decimal value of your arc to find the chord."
-	while True:
-		arc = raw_input("arc = ")
-		if 'q' in arc:
-			intro()
+    print "Enter the decimal value of your arc to find the chord."
+    while True:
+        arc = raw_input("arc = ")
+        if 'q' in arc:
+            intro()
 		else:
 			arc = float(arc)
 		chord = sin(radians(arc / 2)) * 120
@@ -110,13 +112,11 @@ def prompt_chord_sexigesimal():
 		seconds = int(raw_input("seconds = "))
 		output = Sexigesimal(degrees, minutes, seconds)
 		arc = output.convert_to_10()
-		chord = sin(radians(arc / 2)) * 120
-		print "\t", chord # This outputs it in decimal - next step should be a sexigesimal output!
-		print "Enter another arc or (q) to quit."
-		
-		"""The chord is equal to half the sine of twice the arc.
-		"""
-	
+        chord = sin(radians(arc / 2)) * 120
+        print "\t", convert_10to60(chord)
+        print "Enter another arc or (q) to quit."
+        """The chord is equal to half the sine of twice the arc."""
+
 def intro():
 	print """
   ___     _____ ___  _    ___ __  ____   __\t
@@ -124,6 +124,7 @@ def intro():
  |  _/ || || || (_) | |__| _|| |\/| |\ V / \t
  |_|  \_, ||_| \___/|____|___|_|  |_| |_|  \t
       |__/                                 \t"""
+	print "Max Silbiger made this. ver 9/5"
 	print "\ta) Sexigecimal to Decimal"
 	print "\tb) Decimal to Sexigecimal"
 	print "\tc) Arc to Chord (Decimal)"
@@ -140,5 +141,5 @@ def intro():
 	else:
 		pass
 
-intro()
-	
+if __name__ == '__main__':
+    intro()
