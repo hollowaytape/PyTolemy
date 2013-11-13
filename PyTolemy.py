@@ -4,11 +4,8 @@
 # solved issue where IT WAS IN RADIANS THE WHOLE TIME. Added graphix. Added non-prompt versions of all functions.
 # Added a prompt for sexigesimal chord, but it does not output to sexigesimal.
 # 9/4 Changed chord table sexigesimal output to be sexigesimal.
-# Do I want this to be a standalone program or a library? Addition/subtraction/more tools might be easier in a library...
 
-# Still want to add: Conversion between sun's days and motion around the circle (365/360), easy addition/subtraction of the results, reverse chords.
-# I might want to clean up: The Sexigesimal class, so that all the conversions could be accomplished within the class.
-# I might consider: Writing a TI-84 BASIC program for these conversions, for portability.
+# Still want to add: Conversion between sun's days and motion around the circle (365/360), reverse chords, zodiac.
 
 # -*- coding: utf-8 -*-
 
@@ -18,7 +15,7 @@ class Sexigesimal:
     """Represents a sexigesimal number.
     Attributes: degrees, minutes, seconds.
     Can instantiate with DMS or a decimal."""
-    def __init__(self, degrees, minutes=0, seconds=0):
+    def __init__(self, degrees, minutes=0, seconds=0):                    # Way to handle min/sec larger than 60?
         if degrees % 1 == 0:
             self.degrees = degrees
             self.minutes = minutes
@@ -31,12 +28,26 @@ class Sexigesimal:
     def __repr__(self):
         return "%d * %d ' %d \"" % (self.degrees, self.minutes, self.seconds)
 
-    def convert_to_10(self):
+    def decimal(self):
         decimal = 0.000000
         decimal += self.degrees // 1
         decimal += (self.minutes / 60.00)
         decimal += (self.seconds / 60.00**2)
         return decimal
+
+    def __add__(self, x):
+        carry_sec = 0
+        carry_min = 0
+        sec = self.seconds + x.seconds
+        while sec > 60:
+            sec -= 60
+            carry_sec += 1
+        min = self.minutes + x.minutes + carry_sec
+        while min > 60:
+            min -= 60
+            carry_min += 1
+        deg = (self.degrees + x.degrees + carry_min) // 360
+        return Sexigesimal(deg, min, sec)
 
 
 def prompt_10to60():
@@ -44,7 +55,7 @@ def prompt_10to60():
     while True:
         n = raw_input("> ")
         if 'q' in n:
-            intro()
+            interface()
         else:
             n = float(n)
         degrees = n // 1
@@ -66,13 +77,13 @@ def prompt_60to10():
     while True:
         degrees = raw_input("degrees = ")
         if 'q' in degrees:
-            intro()
+            interface()
         else:
             degrees = int(degrees)
         minutes = int(raw_input("minutes = "))
         seconds = int(raw_input("seconds = "))
         output = Sexigesimal(degrees, minutes, seconds)
-        print output.convert_to_10()
+        print output.decimal()
         print "Enter another degree-value or (q) to quit."
 
 
@@ -85,7 +96,7 @@ def prompt_chord_decimal():
     while True:
         arc = raw_input("arc = ")
         if 'q' in arc:
-            intro()
+            interface()
         else:
             arc = float(arc)
         chord = sin(radians(arc / 2)) * 120
@@ -98,41 +109,42 @@ def prompt_chord_sexigesimal():
 	while True:
 		degrees = raw_input("degrees = ")
 		if 'q' in degrees:
-			intro()
+			interface()
 		else:
 			degrees = int(degrees)
 		minutes = int(raw_input("minutes = "))
 		seconds = int(raw_input("seconds = "))
 		output = Sexigesimal(degrees, minutes, seconds)
-		arc = output.convert_to_10()
+		arc = output.decimal()
         chord = sin(radians(arc / 2)) * 120
         print "\t", convert_10to60(chord)
         print "Enter another arc or (q) to quit."
         """The chord is equal to half the sine of twice the arc."""
 
-def intro():
-	print """
+
+def interface():
+    print """
   ___     _____ ___  _    ___ __  ____   __\t
  | _ \_  |_   _/ _ \| |  | __|  \/  \ \ / /\t
  |  _/ || || || (_) | |__| _|| |\/| |\ V / \t
  |_|  \_, ||_| \___/|____|___|_|  |_| |_|  \t
       |__/                                 \t"""
-	print "Max Silbiger made this. ver 11/11"
-	print "\ta) Sexigecimal to Decimal"
-	print "\tb) Decimal to Sexigecimal"
-	print "\tc) Arc to Chord (Decimal)"
-	print "\td) Arc to Chord (Sexigesimal)"
-	conversion_mode = raw_input("> ")
-	if "a" in conversion_mode.lower():
-		prompt_60to10()
-	elif "b" in conversion_mode.lower():
-		prompt_10to60()
-	elif "c" in conversion_mode.lower():
-		prompt_chord_decimal()
-	elif "d" in conversion_mode.lower():
-		prompt_chord_sexigesimal()
-	else:
-		pass
+    print "Max Silbiger made this. ver 11/11"
+    print "\ta) Sexigecimal to Decimal"
+    print "\tb) Decimal to Sexigecimal"
+    print "\tc) Arc to Chord (Decimal)"
+    print "\td) Arc to Chord (Sexigesimal)"
+    conversion_mode = raw_input("> ")
+    if "a" in conversion_mode.lower():
+        prompt_60to10()
+    elif "b" in conversion_mode.lower():
+        prompt_10to60()
+    elif "c" in conversion_mode.lower():
+        prompt_chord_decimal()
+    elif "d" in conversion_mode.lower():
+        prompt_chord_sexigesimal()
+    else:
+        pass
 
 if __name__ == '__main__':     # Helps separate interface/implementation.
-    intro()
+    interface()
