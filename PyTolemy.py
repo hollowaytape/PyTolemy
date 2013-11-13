@@ -11,6 +11,8 @@
 
 from math import sin, radians
 
+SOLAR_DAYS_PER_DEGREE = (365.25/360.00)
+
 class Sexigesimal:
     """Represents a sexigesimal number.
     Attributes: degrees, minutes, seconds.
@@ -34,6 +36,9 @@ class Sexigesimal:
         decimal += (self.minutes / 60.00)
         decimal += (self.seconds / 60.00**2)
         return decimal
+
+    def days(self):
+        return decimal(self) * SOLAR_DAYS_PER_DEGREE
 
     def __add__(self, x):
         carry_sec = 0
