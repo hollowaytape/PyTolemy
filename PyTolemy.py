@@ -1,28 +1,30 @@
-# 9/1 Created class Sexigesimal, __init__, __repr__, print_60, print_10. Created convert_to_sexigesimal.
-# Want to put in the degree symbol, interface, work on arc/chord stuff later.
-# 9/2 Created interface. Intro, dec-sex and sex-dec conversion functions. Created chord function,
-# solved issue where IT WAS IN RADIANS THE WHOLE TIME. Added graphix. Added non-prompt versions of all functions.
-# Added a prompt for sexigesimal chord, but it does not output to sexigesimal.
-# 9/4 Changed chord table sexigesimal output to be sexigesimal.
+# This library is designed to aid in recreating Ptolemy's astronomical calculations in the Almagest,
+# which are done exclusively in sexigesimal numbers for his angles and lengths. His lengths, too, are
+# derived from "chords", which are in modern terms the sine of half the angle, and are related to a
+# unit circle with length 120.
 
-# Still want to add: Conversion between sun's days and motion around the circle (365/360), reverse chords, zodiac.
+# The conversions generally happen in the various methods of the Sexigesimal class, but there is also
+# a primitive interface which can perform these calculations.
+
+# Still want to add: reverse chords, zodiac.
 
 # -*- coding: utf-8 -*-
 
 from math import sin, radians
 
 SOLAR_DAYS_PER_DEGREE = (365.25/360.00)
+DIAMETER_OF_CIRCLE = 120                            # Circle diameter is divided into 120 "parts" by Ptolemy.
 
 class Sexigesimal:
     """Represents a sexigesimal number.
     Attributes: degrees, minutes, seconds.
     Can instantiate with DMS or a decimal."""
-    def __init__(self, degrees, minutes=0, seconds=0):                    # Way to handle min/sec larger than 60?
-        if degrees % 1 == 0:
+    def __init__(self, degrees, minutes=0, seconds=0):
+        if degrees % 1 == 0:        # Accepting DMS values.
             self.degrees = degrees
-            self.minutes = minutes
-            self.seconds = seconds
-        else:
+            self.minutes = minutes % 60                   # Too-large values handled differently than in __add__,
+            self.seconds = seconds % 60                   # since only user error can create them here.
+        else:                       # Accepting decimal values.
             self.degrees = degrees // 1
             self.minutes = ((degrees - self.degrees) * 60.00) // 1
             self.seconds = ((((degrees - self.degrees) * 60.00) - self.minutes) * 60.00) // 1
@@ -40,19 +42,35 @@ class Sexigesimal:
     def days(self):
         return decimal(self) * SOLAR_DAYS_PER_DEGREE
 
-    def __add__(self, x):
+    def __add__(self, x):   # Supports x as a Sexigesimal.
         carry_sec = 0
         carry_min = 0
         sec = self.seconds + x.seconds
-        while sec > 60:
+        while sec >= 60:
             sec -= 60
             carry_sec += 1
         min = self.minutes + x.minutes + carry_sec
-        while min > 60:
+        while min >= 60:
             min -= 60
             carry_min += 1
         deg = (self.degrees + x.degrees + carry_min) // 360
         return Sexigesimal(deg, min, sec)
+
+    def __mul__(self, x):  # Supports x as a decimal number. Not sure if multiplying Sexigesimals is useful to support.
+        carry_sec = 0
+        carry_min = 0
+        sec = self.seconds * x
+        while sec >= 60:
+            sec -= 60
+            carry_sec += 1
+        min = (self.minutes * x) + carry_sec
+        while min >= 60:
+            min -= 60
+            carry_min += 1
+        deg = ((self.degrees * x) + carry_min) // 60
+        return Sexigesimal(deg, min, sec)
+
+
 
 
 def prompt_10to60():
@@ -104,24 +122,24 @@ def prompt_chord_decimal():
             interface()
         else:
             arc = float(arc)
-        chord = sin(radians(arc / 2)) * 120
+        chord = sin(radians(arc / 2)) * DIAMETER_OF_CIRCLE
         print "\t", chord
         print "Enter another arc or (q) to quit."
 
 
 def prompt_chord_sexigesimal():
-	print "Enter the sexigesimal value of your arc to find the chord."
-	while True:
-		degrees = raw_input("degrees = ")
-		if 'q' in degrees:
-			interface()
-		else:
-			degrees = int(degrees)
-		minutes = int(raw_input("minutes = "))
-		seconds = int(raw_input("seconds = "))
-		output = Sexigesimal(degrees, minutes, seconds)
-		arc = output.decimal()
-        chord = sin(radians(arc / 2)) * 120
+    print "Enter the sexigesimal value of your arc to find the chord."
+    while True:
+        degrees = raw_input("degrees = ")
+        if 'q' in degrees:
+            interface()
+        else:
+            degrees = int(degrees)
+        minutes = int(raw_input("minutes = "))
+        seconds = int(raw_input("seconds = "))
+        output = Sexigesimal(degrees, minutes, seconds)
+        arc = output.decimal()
+        chord = sin(radians(arc / 2)) * DIAMETER_OF_CIRCLE
         print "\t", convert_10to60(chord)
         print "Enter another arc or (q) to quit."
         """The chord is equal to half the sine of twice the arc."""
