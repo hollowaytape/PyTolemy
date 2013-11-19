@@ -6,14 +6,14 @@
 # The conversions generally happen in the various methods of the Sexigesimal class, but there is also
 # a primitive interface which can perform these calculations.
 
-# Still want to add: reverse chords, zodiac.
-
 # -*- coding: utf-8 -*-
 
 from math import sin, radians
 
 SOLAR_DAYS_PER_DEGREE = (365.25/360.00)
 DIAMETER_OF_CIRCLE = 120                            # Circle diameter is divided into 120 "parts" by Ptolemy.
+zodiac = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+          "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"]
 
 class Sexigesimal:
     """Represents a sexigesimal number.
@@ -42,6 +42,11 @@ class Sexigesimal:
     def days(self):
         return decimal(self) * SOLAR_DAYS_PER_DEGREE
 
+    def zodiac(self):                            # I wonder if this could be an attribute of the object instead.
+        sign = zodiac[self.degrees / 30]         # (Integer div??) Each zodiac sign represents 30 degrees of the circle.
+        degrees_into_sign = self.degrees // 30
+        return "%s %d * %d ' %d \"" % (sign, degrees_into_sign, self.minutes, self.seconds)
+
     def __add__(self, x):   # Supports x as a Sexigesimal.
         carry_sec = 0
         carry_min = 0
@@ -55,6 +60,24 @@ class Sexigesimal:
             carry_min += 1
         deg = (self.degrees + x.degrees + carry_min) // 360
         return Sexigesimal(deg, min, sec)
+
+    def __sub__(self, x):    # Supports x as a Sexigesimal.
+        carry_sec = 0
+        carry_min = 0
+        sec = self.seconds - x.seconds
+        while sec <= 0:                       # Do I need to check for the >60 case here?
+            sec += 60
+            carry_sec -= 1
+        min = self.minutes - x.minutes + carry_sec
+        while min <= 0:
+            min += 60
+            carry_min -= 1
+        deg = (self.degrees - x.degrees + carry_min) // 360
+        if deg < 0:
+            return Sexigesimal(360) - self    # Needs testing.
+        else:
+            return Sexigesimal(deg, min, sec)
+
 
     def __mul__(self, x):  # Supports x as a decimal number. Not sure if multiplying Sexigesimals is useful to support.
         carry_sec = 0
@@ -111,8 +134,12 @@ def prompt_60to10():
 
 
 def convert_chord(arc):
-    return sin(radians(arc / 2)) * 120
+    return sin(radians(arc / 2)) * DIAMETER_OF_CIRCLE
 
+
+"""def convert_arc(chord):
+    return (chord / DIAMETER_OF_CIRCLE)
+    Not sure on the math syntax on this yet."""
 
 def prompt_chord_decimal():
     print "Enter the decimal value of your arc to find the chord."
