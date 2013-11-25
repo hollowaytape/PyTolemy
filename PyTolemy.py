@@ -39,8 +39,11 @@ class Sexigesimal:
         decimal += (self.seconds / 60.00**2)
         return decimal
 
+    def chord(self):
+        return sin(radians(Sexigesimal.decimal(self) / 2)) * DIAMETER_OF_CIRCLE
+
     def days(self):
-        return decimal(self) * SOLAR_DAYS_PER_DEGREE
+        return Sexigesimal.decimal(self) * SOLAR_DAYS_PER_DEGREE
 
     def zodiac(self):                            # I wonder if this could be an attribute of the object instead.
         sign = zodiac[self.degrees / 30]         # (Integer div??) Each zodiac sign represents 30 degrees of the circle.
@@ -79,7 +82,7 @@ class Sexigesimal:
             return Sexigesimal(deg, min, sec)
 
 
-    def __mul__(self, x):  # Supports x as a decimal number. Not sure if multiplying Sexigesimals is useful to support.
+    def __mul__(self, x):  # Supports x as a decimal number. Not sure if multiplying Sexigesimals is useful.
         carry_sec = 0
         carry_min = 0
         sec = self.seconds * x
@@ -94,8 +97,6 @@ class Sexigesimal:
         return Sexigesimal(deg, min, sec)
 
 
-
-
 def prompt_10to60():
     print "Enter your decimal value."
     while True:
@@ -104,18 +105,8 @@ def prompt_10to60():
             interface()
         else:
             n = float(n)
-        degrees = n // 1
-        minutes = ((n - degrees) * 60.00) // 1
-        seconds = ((((n - degrees) * 60.00) - minutes) * 60.00) // 1
-        print "\t", Sexigesimal(degrees, minutes, seconds)
+        print "\t", Sexigesimal(n)
         print "Enter another decimal value or (q) to quit."
-
-def convert_60to10(n):           # Currently only used in the arc/chord function.
-    decimal = 0.000000
-    decimal += n.degrees // 1
-    decimal += (n.minutes / 60.00)
-    decimal += (n.seconds / 60.00**2)
-    return decimal
 
 
 def prompt_60to10():
@@ -133,13 +124,10 @@ def prompt_60to10():
         print "Enter another degree-value or (q) to quit."
 
 
-def convert_chord(arc):
-    return sin(radians(arc / 2)) * DIAMETER_OF_CIRCLE
-
-
 """def convert_arc(chord):
     return (chord / DIAMETER_OF_CIRCLE)
     Not sure on the math syntax on this yet."""
+
 
 def prompt_chord_decimal():
     print "Enter the decimal value of your arc to find the chord."
@@ -148,8 +136,8 @@ def prompt_chord_decimal():
         if 'q' in arc:
             interface()
         else:
-            arc = float(arc)
-        chord = sin(radians(arc / 2)) * DIAMETER_OF_CIRCLE
+            arc = Sexigesimal(arc)
+        chord = arc.chord()
         print "\t", chord
         print "Enter another arc or (q) to quit."
 
@@ -164,12 +152,33 @@ def prompt_chord_sexigesimal():
             degrees = int(degrees)
         minutes = int(raw_input("minutes = "))
         seconds = int(raw_input("seconds = "))
-        output = Sexigesimal(degrees, minutes, seconds)
-        arc = output.decimal()
-        chord = sin(radians(arc / 2)) * DIAMETER_OF_CIRCLE
-        print "\t", convert_10to60(chord)
+        arc = Sexigesimal(degrees, minutes, seconds)
+        chord = arc.chord()
+        print "\t", Sexigesimal(chord)
         print "Enter another arc or (q) to quit."
         """The chord is equal to half the sine of twice the arc."""
+
+def prompt_angle_zodiac():
+    print "Enter the degree value of the arc to find its position in the zodiac, starting at 0 Aries."
+    while True:
+        degrees = raw_input("degrees = ")
+        if 'q' in degrees:
+            interface()
+        degrees_value = float(degrees)
+        print Sexigesimal(degrees_value).zodiac()
+        print "Enter another value or (q) to quit."
+
+
+def prompt_angle_days():
+    print "Enter the degree value of the arc to find the number of solar days traversed within it."
+    while True:
+        degrees = raw_input("degrees = ")
+        if 'q' in degrees:
+            interface()
+        degrees = float(degrees)
+        minutes = int(raw_input("minutes = "))
+        seconds = int(raw_input("seconds = "))
+        print Sexigesimal(degrees, minutes, seconds).days()
 
 
 def interface():
@@ -184,6 +193,8 @@ def interface():
     print "\tb) Decimal to Sexigecimal"
     print "\tc) Arc to Chord (Decimal)"
     print "\td) Arc to Chord (Sexigesimal)"
+    print "\te) Angle to Zodiac"
+    print "\tf) Angle to Solar Days"
     conversion_mode = raw_input("> ")
     if "a" in conversion_mode.lower():
         prompt_60to10()
@@ -193,6 +204,10 @@ def interface():
         prompt_chord_decimal()
     elif "d" in conversion_mode.lower():
         prompt_chord_sexigesimal()
+    elif "e" in conversion_mode.lower():
+        prompt_angle_zodiac()
+    elif "f" in conversoin_mode.lower():
+        prompt_angle_days()
     else:
         pass
 
