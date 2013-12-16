@@ -8,7 +8,7 @@
 
 # -*- coding: utf-8 -*-
 
-from math import sin, radians
+from math import sin, radians, asin
 
 SOLAR_DAYS_PER_DEGREE = (365.25/360.00)
 DIAMETER_OF_CIRCLE = 120                            # Circle diameter is divided into 120 "parts" by Ptolemy.
@@ -45,41 +45,48 @@ class Sexigesimal:
     def days(self):
         return Sexigesimal.decimal(self) * SOLAR_DAYS_PER_DEGREE
 
-    def zodiac(self):                            # I wonder if this could be an attribute of the object instead.
-        sign = zodiac[self.degrees / 30]         # (Integer div??) Each zodiac sign represents 30 degrees of the circle.
-        degrees_into_sign = self.degrees // 30
+    def zodiac(self):                            # Attribute of the object? No. only generated on demand.
+        sign = zodiac[self.degrees / 30]         # Each zodiac sign represents 30 degrees of the circle.
+        degrees_into_sign = self.degrees / 30    # (Both kinds of division do the same thing to an int.)
         return "%s %d * %d ' %d \"" % (sign, degrees_into_sign, self.minutes, self.seconds)
 
-    def __add__(self, x):   # Supports x as a Sexigesimal.
-        carry_sec = 0
-        carry_min = 0
-        sec = self.seconds + x.seconds
-        while sec >= 60:
-            sec -= 60
-            carry_sec += 1
-        min = self.minutes + x.minutes + carry_sec
-        while min >= 60:
-            min -= 60
-            carry_min += 1
-        deg = (self.degrees + x.degrees + carry_min) // 360
-        return Sexigesimal(deg, min, sec)
-
-    def __sub__(self, x):    # Supports x as a Sexigesimal.
-        carry_sec = 0
-        carry_min = 0
-        sec = self.seconds - x.seconds
-        while sec <= 0:                       # Do I need to check for the >60 case here?
-            sec += 60
-            carry_sec -= 1
-        min = self.minutes - x.minutes + carry_sec
-        while min <= 0:
-            min += 60
-            carry_min -= 1
-        deg = (self.degrees - x.degrees + carry_min) // 360
-        if deg < 0:
-            return Sexigesimal(360) - self    # Needs testing.
-        else:
+    def __add__(self, x):
+        if x.degrees:              # If x is a Sexigesimal, it has this attribute.
+            carry_sec = 0
+            carry_min = 0
+            sec = self.seconds + x.seconds
+            while sec >= 60:
+                sec -= 60
+                carry_sec += 1
+            min = self.minutes + x.minutes + carry_sec
+            while min >= 60:
+                min -= 60
+                carry_min += 1
+            deg = (self.degrees + x.degrees + carry_min) // 360
             return Sexigesimal(deg, min, sec)
+        else:                      # If x is a decimal, make it into a Sexigesimal.
+            self + Sexigesimal(x)
+
+
+    def __sub__(self, x):
+        if x.degrees:
+            carry_sec = 0
+            carry_min = 0
+            sec = self.seconds - x.seconds
+            while sec <= 0:                       # Do I need to check for the >60 case here?
+                sec += 60
+                carry_sec -= 1
+            min = self.minutes - x.minutes + carry_sec
+            while min <= 0:
+                min += 60
+                carry_min -= 1
+            deg = (self.degrees - x.degrees + carry_min) // 360
+            if deg < 0:
+                return Sexigesimal(360) - self    # Needs testing.
+            else:
+                return Sexigesimal(deg, min, sec)
+        else:
+            self - Sexigesimal(x)
 
 
     def __mul__(self, x):  # Supports x as a decimal number. Not sure if multiplying Sexigesimals is useful.
@@ -124,10 +131,8 @@ def prompt_60to10():
         print "Enter another degree-value or (q) to quit."
 
 
-"""def convert_arc(chord):
-    return (chord / DIAMETER_OF_CIRCLE)
-    Not sure on the math syntax on this yet."""
-
+def convert_arc(chord):
+    return Sexigesimal(asin(radians(chord / DIAMETER_OF_CIRCLE)) * 2)
 
 def prompt_chord_decimal():
     print "Enter the decimal value of your arc to find the chord."
@@ -206,7 +211,7 @@ def interface():
         prompt_chord_sexigesimal()
     elif "e" in conversion_mode.lower():
         prompt_angle_zodiac()
-    elif "f" in conversoin_mode.lower():
+    elif "f" in conversion_mode.lower():
         prompt_angle_days()
     else:
         pass
