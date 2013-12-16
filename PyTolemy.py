@@ -15,6 +15,7 @@ DIAMETER_OF_CIRCLE = 120                            # Circle diameter is divided
 zodiac = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
           "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"]
 
+
 class Sexigesimal:
     """Represents a sexigesimal number.
     Attributes: degrees, minutes, seconds.
@@ -67,7 +68,6 @@ class Sexigesimal:
         else:                      # If x is a decimal, make it into a Sexigesimal.
             self + Sexigesimal(x)
 
-
     def __sub__(self, x):
         if x.degrees:
             carry_sec = 0
@@ -87,7 +87,6 @@ class Sexigesimal:
                 return Sexigesimal(deg, min, sec)
         else:
             self - Sexigesimal(x)
-
 
     def __mul__(self, x):  # Supports x as a decimal number. Not sure if multiplying Sexigesimals is useful.
         carry_sec = 0
@@ -134,6 +133,7 @@ def prompt_60to10():
 def convert_arc(chord):
     return Sexigesimal(asin(radians(chord / DIAMETER_OF_CIRCLE)) * 2)
 
+
 def prompt_chord_decimal():
     print "Enter the decimal value of your arc to find the chord."
     while True:
@@ -162,6 +162,7 @@ def prompt_chord_sexigesimal():
         print "\t", Sexigesimal(chord)
         print "Enter another arc or (q) to quit."
         """The chord is equal to half the sine of twice the arc."""
+
 
 def prompt_angle_zodiac():
     print "Enter the degree value of the arc to find its position in the zodiac, starting at 0 Aries."
