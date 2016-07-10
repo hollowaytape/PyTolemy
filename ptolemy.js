@@ -12,8 +12,10 @@ Math.radians = function(degrees) {
 
 function ensureSimpleAngle(angle) {
 	// If the angle is less than 0 or greater than 360, convert it to a coterminal simple angle.
-	if (angle < 0) {
-		angle = (360 + angle);
+	angle = parseInt(angle);
+	while (angle < 0) {
+		console.log(angle);
+		angle += 360;
 	}
 
 	while (angle >= 360) {
@@ -54,21 +56,34 @@ var DIAMETER_OF_CIRCLE = 120;
 
 function toChord(decimal) {
 	var result = Math.sin(Math.radians(decimal)/2) * DIAMETER_OF_CIRCLE;
-	result = ensureSimpleAngle(result);
 	return result;
+}
+
+var ZODIAC = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+
+function toZodiac(sexigesimal) {
+	var array = sexigesimal.split("°").join(',').split("'").join(',').split('"').join(',').split(',');
+	var degrees = parseInt(array[0]);
+	var minutes = parseInt(array[1]) / 60;
+	var seconds = parseInt(array[2]) / 3600;
+
+	var sign = ZODIAC[Math.floor(degrees / 30)];
+	var degrees_into_sign = degrees % 30;
+	return degrees_into_sign + "°" + minutes + '"' + seconds + "'" + " into " + sign;
+	// TODO: This is different for Ptolemy and us.
+	// TODO: I'm not totally sure what this means anyway. What is the zero point??
 }
 
 /*
 	Functions for getting input and displaying output.
 */
 
-function calcSexigesimal() {
+function updateSexigesimal() {
 	var decimalInput = document.getElementById("decimal").value;
 	// Ex. 60.23 + 21.5 = 81*43'47".
 	// Should probably sanitize this as well!!
 	// Input of alert("Hi!"); says hi of course.
 	var sanitized = decimalInput.replace(/[^0-9.+-/*]/gi, '');
-	console.log(sanitized);
 	var decimal = eval(sanitized);
 	var result = toSexigesimal(decimal);
 
@@ -78,16 +93,25 @@ function calcSexigesimal() {
 	}
 	else {
 		document.getElementById("sexigesimal").value = result;
-		calcChord();
+		updateChord();
+		updateZodiac();
 	}
 }
 
 
-function calcChord() {
+function updateChord() {
 	var decimal = document.getElementById('decimal').value;
+	decimal = ensureSimpleAngle(decimal);
 	var result = toChord(decimal);
 
 	document.getElementById('chord').value = result;
+}
+
+function updateZodiac() {
+	var sexigesimal = document.getElementById('sexigesimal').value;
+	var result = toZodiac(sexigesimal);
+
+	document.getElementById('zodiac').value = result;
 }
 
 function displayHelpText() {
@@ -95,7 +119,7 @@ function displayHelpText() {
 	alert("here's some help text");
 }
 
-function calcDecimal() {
+function updateDecimal() {
 	var sexigesimalInput = document.getElementById('sexigesimal').value;
 	// How do I achieve the same eval() flexibility for the sexigesimal input?
 
@@ -108,7 +132,8 @@ function calcDecimal() {
 		document.getElementById("sexigesimal").className = 'form-group-has-warning';
 	} else {
 		document.getElementById('decimal').value = result;
-		calcChord();
+		updateChord();
+		updateZodiac();
 	}
 }
 
