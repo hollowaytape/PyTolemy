@@ -9,6 +9,7 @@
 
 <body>
 	<h2>Decimal-Sexigesimal Converter</h2>
+	<em>Perform calculations for early Greek and Renaissance astronomy.</em>
 	<div class="form-group">
 		<label for="decimal">Decimal:</label>
 		<input id="decimal" type="text" maxlength="512" class="searchField" onchange="calcSexigesimal()" />
@@ -17,6 +18,11 @@
 		<label for="sexigesimal">Sexigesimal:</label>
 		<input id="sexigesimal" type="text" maxlength="512" class="searchField" onchange="calcDecimal()" />
 	</div>
+	<div class="form-group">
+		<label for="chord">Chord:</label>
+		<input id="chord" type="text" maxlength="512" class="searchField" />
+	</div>
+	<a onclick="displayHelpText()">Help</a>
 	<!-- <button type="button" class="btn btn-primary" onclick="calculate()">Calculate</button> -->
 </body>
 
