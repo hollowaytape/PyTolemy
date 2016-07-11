@@ -62,6 +62,8 @@ function toChord(decimal) {
 var ZODIAC = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
 
 function toZodiac(sexigesimal) {
+	// The point of the vernal equinox is 0.
+	// Ptolemy and Copernicus refer to the zodiac location of various events they talk about.
 	var array = sexigesimal.split("°").join(',').split("'").join(',').split('"').join(',').split(',');
 	var degrees = parseInt(array[0]);
 	var minutes = parseInt(array[1]) / 60;
@@ -70,8 +72,8 @@ function toZodiac(sexigesimal) {
 	var sign = ZODIAC[Math.floor(degrees / 30)];
 	var degrees_into_sign = degrees % 30;
 	return degrees_into_sign + "°" + minutes + '"' + seconds + "'" + " into " + sign;
-	// TODO: This is different for Ptolemy and us.
-	// TODO: I'm not totally sure what this means anyway. What is the zero point??
+	// TODO: Copernicus does some calculation of how procession makes the zodiac positions differ
+	// between his and Ptolemy's time. Add an option to display Greek/Renaissance/Present zodiacs?
 }
 
 /*

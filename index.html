@@ -8,26 +8,37 @@
 </head>
 
 <body>
-	<h2>Decimal-Sexigesimal Converter</h2>
+	<div class='container'>
+	<h2>Ancient Astronomy Calculator</h2>
 	<em>Perform calculations for early Greek and Renaissance astronomy.</em>
-	<div class="form-group">
-		<label for="decimal">Decimal:</label>
-		<input id="decimal" type="text" maxlength="512" class="searchField" onchange="updateSexigesimal()" />
-	</div>
-	<div class="form-group">
-		<label for="sexigesimal">Sexigesimal:</label>
-		<input id="sexigesimal" type="text" maxlength="512" class="searchField" onchange="updateDecimal()" />
-	</div>
-	<div class="form-group">
-		<label for="chord">Chord:</label>
-		<input id="chord" type="text" maxlength="512" class="searchField" />
-	</div>
-	<div class="form-group">
-		<label for="zodiac">Zodiac:</label>
-		<input id="zodiac" type="text" maxlength="512" class="searchField" disabled />
-	</div>
+	<form class="form-horizontal">
+		<div class="form-group">
+			<label class="col-sm-2 control-label" for="decimal">Decimal Angle:</label>
+			<div class="col-sm-10">
+				<input id="decimal" type="text" maxlength="512" class="searchField" onchange="updateSexigesimal()" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label" for="sexigesimal">Sexigesimal Angle:</label>
+			<div class="col-sm-10">
+				<input id="sexigesimal" type="text" maxlength="512" class="searchField" onchange="updateDecimal()" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label" for="chord">Chord Length:</label>
+			<div class="col-sm-10">
+				<input id="chord" type="text" maxlength="512" class="searchField" />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label" for="zodiac">Zodiac Location:</label>
+			<div class="col-sm-10">
+				<input id="zodiac" type="text" maxlength="512" class="searchField" disabled />
+			</div>
+		</div>
+	</form>
 	<a onclick="displayHelpText()">Help</a>
-	<!-- <button type="button" class="btn btn-primary" onclick="calculate()">Calculate</button> -->
+	</div>
 </body>
 
 </html>
