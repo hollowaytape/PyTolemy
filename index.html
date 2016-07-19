@@ -4,40 +4,57 @@
 	<meta charset="utf-8">
 	<title>Ptolemy Calculator</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link type="text/css" rel="stylesheet" href="ptolemy.css" media="all" />
 	<script src="ptolemy.js"></script>
 </head>
 
 <body>
 	<div class='container'>
-	<h2>Ancient Astronomy Calculator</h2>
-	<em>Perform calculations for early Greek and Renaissance astronomy.</em>
-	<form class="form-horizontal">
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="decimal">Decimal Angle:</label>
-			<div class="col-sm-10">
-				<input id="decimal" type="text" maxlength="512" class="searchField" onchange="updateSexigesimal()" />
+		<div class="col-md-7 col-md-offset-3">
+
+			<h2>Ancient Astronomy Calculator</h2>
+			<em>Perform calculations for early Greek and Renaissance astronomy.</em>
+
+			<form class="form-horizontal">
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="decimal">Decimal Angle:</label>
+					<div class="col-sm-10">
+						<input id="decimal" type="text" maxlength="512" class="searchField" onchange="updateSexigesimal()" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="sexigesimal">Sexigesimal Angle:</label>
+					<div class="col-sm-10">
+						<input id="sexigesimal" type="text" maxlength="512" class="searchField" onchange="updateDecimal()" />
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="chord">Chord Length:</label>
+					<div class="col-sm-10">
+						<input id="chord" type="text" maxlength="512" class="searchField" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="zodiac">Zodiac Location:</label>
+					<div class="col-sm-10">
+						<input id="zodiac" type="text" maxlength="512" class="searchField" disabled />
+					</div>
+				</div>
+
+			</form>
+			<a id="showHelp">Help</a>
+			<div id="help">
+				<ul>
+					<li>Type an angle in decimal to convert it to the values in the other fields.</li>
+					<li>You can also add or subtract angles in the "Decimal Angle" field.</li>
+					<li>Chord length is given relative to a circle with diameter 120, as Ptolemy does.</li>
+				</ul>
 			</div>
 		</div>
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="sexigesimal">Sexigesimal Angle:</label>
-			<div class="col-sm-10">
-				<input id="sexigesimal" type="text" maxlength="512" class="searchField" onchange="updateDecimal()" />
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="chord">Chord Length:</label>
-			<div class="col-sm-10">
-				<input id="chord" type="text" maxlength="512" class="searchField" />
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="col-sm-2 control-label" for="zodiac">Zodiac Location:</label>
-			<div class="col-sm-10">
-				<input id="zodiac" type="text" maxlength="512" class="searchField" disabled />
-			</div>
-		</div>
-	</form>
-	<a onclick="displayHelpText()">Help</a>
 	</div>
 </body>
 

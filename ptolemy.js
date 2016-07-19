@@ -116,9 +116,14 @@ function updateZodiac() {
 	document.getElementById('zodiac').value = result;
 }
 
+var helpDiv = document.getElementById('help');
+helpDiv.style.visibility = 'none';
+
+var displayHelp = document.getElementById('showHelp');
+displayHelp.addEventListener('click', displayHelpText(), false);
+
 function displayHelpText() {
-	// TODO
-	alert("here's some help text");
+	helpDiv.style.visibility = 'block';
 }
 
 function updateDecimal() {

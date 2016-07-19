@@ -1,0 +1,15 @@
+body {
+	background: url('http://res.cloudinary.com/hollowaytape/image/upload/v1468955059/Cassini_apparent_g6jtoe.jpg');
+	background-size: 100%;
+	background-repeat: no-repeat;
+	color: white !important;
+}
+
+.searchField {
+	background-color: #483078 !important;
+	color: white !important;
+}
+
+a {
+	color: #906090 !important;
+}
